@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
-      - name: Checkout dépot
+      - name: Checkout dépôt
         uses: actions/checkout@v3
 
       - name: Installer les dépendances
@@ -21,23 +21,25 @@ jobs:
           pytest src/tests/test_calculator.py
 
       - name: Deploy to VM
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: log430                   
-          key: ${{ secrets.VM_SSH_KEY }}
-          script: |
+        env:
+          VM_HOST: ${{ secrets.VM_HOST }}
+          VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+        run: |
+          echo "$VM_SSH_KEY" > ssh_key
+          chmod 600 ssh_key
+          
+          ssh -i ssh_key -o StrictHostKeyChecking=no log430@$VM_HOST << 'EOF'
             mkdir -p ~/my-app
-            cd ~/my-a
-            # Mettre à jour le repo si déjà cloné, sinon cloner
+            cd ~/my-app
             if [ -d ".git" ]; then
               git reset --hard
               git pull
             else
               git clone https://github.com/MariaRimaDev/log430-a25-labo0.git .
-            
+            fi
             # Construire l'image Docker
-            docker build -t calculator-app
+            docker build -t calculator-app .
             docker run --rm calculator-app echo "Container started successfully!"
-      
-
+          EOF
+          
+          rm ssh_key

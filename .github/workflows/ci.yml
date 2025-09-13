@@ -22,7 +22,6 @@ jobs:
           pytest src/tests/test_calculator.py
 
       - name: Debug secrets
-        environment: log430-nv
         env:
           VM_HOST: ${{ secrets.VM_HOST }}
           VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}

@@ -21,7 +21,31 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
       
-      # - name: Exécuter test à chaque push
-      #   run: |
-      #     pytest src/tests/test_calculator.py
+      - name: Exécuter test à chaque push
+        run: |
+          pytest src/tests/test_calculator.py
+
+      - name: Deploy to VM
+             uses: appleboy/ssh-action@v0.1.7
+             with:
+               host: ${{ secrets.VM_HOST }}       
+               username: log430                   
+               key: ${{ secrets.VM_SSH_KEY }}   
+               script: |
+                 mkdir -p ~/my-app
+                 cd ~/my-app
+
+                 # Mettre à jour le repo si déjà cloné, sinon cloner
+                 if [ -d ".git" ]; then
+                   git reset --hard
+                   git pull
+                 else
+                   git clone https://github.com/MariaRimaDev/log430-a25-labo0.git .
+                 fi
+
+                 # Construire l'image Docker
+                 docker build -t calculator-app .
+
+                 docker run --rm calculator-app echo "Container started successfully!"
+      
 

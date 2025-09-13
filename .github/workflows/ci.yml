@@ -14,22 +14,29 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
+      
+      - name: Exécuter test à chaque push
+        run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+          pytest src/tests/test_calculator.py
 
       - name: Install sshpass
         run: |
-          brew install sshpass
+          # Ensure Homebrew runs natively on ARM for M2
+          arch -arm64 brew update
+          arch -arm64 brew install sshpass
           # Verify installation
-          sshpass -V
+          arch -arm64 sshpass -V
 
       - name: Deploy to VM
         env:
           VM_HOST: 10.194.32.173
-          VM_PASSWORD: 88HC68NxZis2VVBV  
+          VM_PASSWORD: 88HC68NxZis2VVBV 
         run: |
           echo "$VM_PASSWORD" > password_file
           chmod 600 password_file
           
-          sshpass -f password_file ssh -o StrictHostKeyChecking=no log430@$VM_HOST << 'EOF'
+          arch -arm64 sshpass -f password_file ssh -o StrictHostKeyChecking=no log430@$VM_HOST << 'EOF'
             mkdir -p ~/my-app
             cd ~/my-app
             if [ -d ".git" ]; then
@@ -38,6 +45,7 @@ jobs:
             else
               git clone https://github.com/MariaRimaDev/log430-a25-labo0.git .
             fi
+            # Construire l'image Docker
             docker build -t calculator-app .
             docker run --rm calculator-app echo "Container started successfully!"
           EOF

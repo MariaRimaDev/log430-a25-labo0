@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: self-hosted
+    environment: log430--nv
     steps:
       - name: Checkout dépôt
         uses: actions/checkout@v3
@@ -30,8 +31,8 @@ jobs:
 
       - name: Deploy to VM
         env:
-          VM_HOST: 10.194.32.173
-          VM_PASSWORD: 88HC68NxZis2VVBV 
+          VM_HOST: ${{ secrets.VM_HOST }}
+          VM_PASSWORD: ${{ secrets.VM_SSH_KEY }}
         run: |
           echo "$VM_PASSWORD" > password_file
           chmod 600 password_file

@@ -22,6 +22,5 @@ jobs:
           pip install pytest
       
       - name: Exécuter test à chaque push
-        run: |
-          pytest src/tests/test_calculator.py
+        run: pytest src/tests/test_calculator.py
 

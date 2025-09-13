@@ -23,7 +23,7 @@ jobs:
       
       - name: Exécuter test à chaque push
         run: |
-          echo $PYTHONPATH
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/src
           pytest src/tests/test_calculator.py
 
       - name: Deploy to VM

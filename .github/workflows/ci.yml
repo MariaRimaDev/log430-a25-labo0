@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: self-hosted
+    environment: log430-nv
     steps:
       - name: Checkout dépôt
         uses: actions/checkout@v3

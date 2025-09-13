@@ -4,8 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    runs-on: self-hosted
     steps:
       - name: Checkout dépot
         uses: actions/checkout@v3
@@ -29,9 +28,9 @@ jobs:
       - name: Deploy to VM
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.VM_HOST }}       
+          host: ${{ secrets.VM_HOST }}
           username: log430                   
-          key: ${{ secrets.VM_SSH_KEY }}   
+          key: ${{ secrets.VM_SSH_KEY }}
           script: |
             mkdir -p ~/my-app
             cd ~/my-a

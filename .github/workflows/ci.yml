@@ -22,5 +22,7 @@ jobs:
           pip install pytest
       
       - name: Exécuter test à chaque push
-        run: pytest src/tests/test_calculator.py
+        run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+          pytest src/tests/test_calculator.py
 

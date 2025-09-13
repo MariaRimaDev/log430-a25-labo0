@@ -6,6 +6,8 @@ Auteurs : Gabriel C. Ullmann, Fabio Petrillo, 2025
 
 from calculator import Calculator
 
+
+
 # TODO: ajoutez les tests
 
 "=========================== ACTIVITÉ 1 ==========================="

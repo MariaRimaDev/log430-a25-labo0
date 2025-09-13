@@ -27,4 +27,4 @@ def test_division():
     assert my_calculator.division(10, 2) == 5
 
 def test_addition_erreur():
-    assert my_calculator.addition(2, 2) == 5
+    assert my_calculator.addition(2, 2) == 4

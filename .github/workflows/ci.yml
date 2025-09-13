@@ -20,6 +20,15 @@ jobs:
           export PYTHONPATH=$PYTHONPATH:$(pwd)/src
           pytest src/tests/test_calculator.py
 
+      - name: Debug secrets
+        env:
+          VM_HOST: ${{ secrets.VM_HOST }}
+          VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+        run: |
+          echo "VM_HOST: $VM_HOST"
+          echo "VM_SSH_KEY length: ${#VM_SSH_KEY}"
+
+
       - name: Deploy to VM
         env:
           VM_HOST: ${{ secrets.VM_HOST }}

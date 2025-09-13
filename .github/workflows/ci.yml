@@ -14,32 +14,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
-      
-      - name: Exécuter test à chaque push
-        run: |
-          export PYTHONPATH=$PYTHONPATH:$(pwd)/src
-          pytest src/tests/test_calculator.py
 
-      - name: Debug secrets
-        environment: 
-          name : 'log430-nv'
-        env:
-          VM_HOST: ${{ secrets.VM_HOST }}
-          VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+      - name: Install sshpass
         run: |
-          echo "VM_HOST: $VM_HOST"
-          echo "VM_SSH_KEY length: ${#VM_SSH_KEY}"
-
+          brew install sshpass
+          # Verify installation
+          sshpass -V
 
       - name: Deploy to VM
         env:
-          VM_HOST: ${{ secrets.VM_HOST }}
-          VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+          VM_HOST: 10.194.32.173
+          VM_PASSWORD: 88HC68NxZis2VVBV  
         run: |
-          echo "$VM_SSH_KEY" > ssh_key
-          chmod 600 ssh_key
+          echo "$VM_PASSWORD" > password_file
+          chmod 600 password_file
           
-          ssh -i ssh_key -o StrictHostKeyChecking=no log430@$VM_HOST << 'EOF'
+          sshpass -f password_file ssh -o StrictHostKeyChecking=no log430@$VM_HOST << 'EOF'
             mkdir -p ~/my-app
             cd ~/my-app
             if [ -d ".git" ]; then
@@ -48,9 +38,8 @@ jobs:
             else
               git clone https://github.com/MariaRimaDev/log430-a25-labo0.git .
             fi
-            # Construire l'image Docker
             docker build -t calculator-app .
             docker run --rm calculator-app echo "Container started successfully!"
           EOF
           
-          rm ssh_key
+          rm password_file

@@ -16,6 +16,11 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
       
+      - name: Tests
+        working-directory: src
+        run: | 
+          python -m pytest 
+
       - name: Exécuter test à chaque push
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)/src
@@ -46,7 +51,6 @@ jobs:
             else
               git clone https://github.com/MariaRimaDev/log430-a25-labo0.git .
             fi
-            # Construire l'image Docker
             docker build -t calculator-app .
             docker run --rm calculator-app echo "Container started successfully!"
           EOF

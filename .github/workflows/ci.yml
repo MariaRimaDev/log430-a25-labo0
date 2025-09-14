@@ -28,10 +28,8 @@ jobs:
 
       - name: Install sshpass
         run: |
-          # Ensure Homebrew runs natively on ARM for M2
           arch -arm64 brew update
           arch -arm64 brew install sshpass
-          # Verify installation
           arch -arm64 sshpass -V
 
       - name: Deploy to VM
